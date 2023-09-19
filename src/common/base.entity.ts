@@ -9,7 +9,8 @@ export abstract class BaseEntity {
     required: true,
   })
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date; //👀
+
   @ApiProperty({
     example: '2023-09-19T00:00:00.000Z',
     description: '수정일',

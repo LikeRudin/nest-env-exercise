@@ -5,7 +5,8 @@ import { dbConfig } from '@/configs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { UserController } from './modules/user/user.controller';
-import { UserSercive } from './modules/user/user.service';
+import { UserService} from './modules/user/user.service';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -17,10 +18,11 @@ import { UserSercive } from './modules/user/user.service';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => config.get(CONFIG.DB),
-      inject: [ConfigService]
-    })
+      inject: [ConfigService],
+    }),
+    UserModule
   ],
-  controllers: [AppController, UserController],
-  providers: [UserSercive],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}
