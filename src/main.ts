@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule } from '@nestjs/swagger';
 
 import * as expressBasicAuth from 'express-basic-auth';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from '@/app.module';
 import { API_URL } from '@/constants';
@@ -38,8 +39,16 @@ class Application {
       );
   }
 
+  private async setUpCookieParser(){
+    this.app.use(cookieParser(process.env.COOKIE_SECRET,));
+  }
+  private async setUpGlobalMiddleware() {
+    this.setUpOpenAPI();
+    this.setUpCookieParser();
+  }
+
   async bootstrap(){
-    await this.setUpOpenAPI();
+    await this.setUpGlobalMiddleware();
     await this.app.listen(this.PORT);
   }
 
