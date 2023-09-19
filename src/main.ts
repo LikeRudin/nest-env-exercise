@@ -9,6 +9,7 @@ import * as cookieParser from 'cookie-parser';
 import { AppModule } from '@/app.module';
 import { API_URL } from '@/constants';
 import { swaggerConfig } from '@/configs/swagger.config';
+import { ValidationPipe } from '@nestjs/common';
 
 class Application {
   private logger = new Logger(Application.name);
@@ -39,12 +40,17 @@ class Application {
       );
   }
 
-  private async setUpCookieParser(){
+  private async setUpMiddlewares(){
     this.app.use(cookieParser(process.env.COOKIE_SECRET,));
+    this.app.useGlobalPipes(new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }))
   }
   private async setUpGlobalMiddleware() {
     this.setUpOpenAPI();
-    this.setUpCookieParser();
+    this.setUpMiddlewares();
   }
 
   async bootstrap(){
