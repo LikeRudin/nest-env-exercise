@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 
-export abstract class CommonEntity {
+export abstract class BaseEntity {
   @ApiProperty({
     example: '2023-09-19T00:00:00.000Z',
     description: '생성일',
