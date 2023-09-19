@@ -4,8 +4,6 @@ import { APP, CONFIG } from '@/constants';
 import { dbConfig } from '@/configs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
-import { UserController } from './modules/user/user.controller';
-import { UserService} from './modules/user/user.service';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
