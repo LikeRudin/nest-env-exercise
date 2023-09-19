@@ -1,17 +1,17 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "./user.entity";
 import { CreateUserDto } from "../dtos/create-user-dto";
 import { Repository } from "typeorm";
 import { LoginUserDTO } from "../dtos/login-user-dto";
+import { UserEntity } from "./user.entity";
 
 @Injectable()
-export class UserSercive{
+export class UserService{
     constructor(
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>
-    ){}
-
+        @InjectRepository(UserEntity) 
+        private readonly userRepository: Repository<UserEntity>)
+        {}
+        
     async createEmailAccount(userdata: CreateUserDto, req: Request){
         const {username, email, password} = userdata;
         const userAlreadyExist = await this.userRepository.find({where: [{email}]});
