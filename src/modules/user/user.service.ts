@@ -14,8 +14,9 @@ export class UserService {
   ) {}
 
   private createJWT(id: number) {
-    const token = JWT.sign({}, process.env.COOKIE_SECRET, {
+    const token = JWT.sign({ id }, process.env.COOKIE_SECRET, {
       algorithm: 'HS256',
+      expiresIn: 60 * 60,
     });
     return token;
   }
@@ -23,7 +24,7 @@ export class UserService {
   async createEmailAccount(userdata: CreateUserDto) {
     const { username, email, password } = userdata;
     const userAlreadyExist = await this.userRepository.findOne({
-      where: { email },
+      where: [{ email }],
     });
     if (userAlreadyExist) {
       throw new HttpException('이미 가입한 이메일 입니다. ', 404);
@@ -43,7 +44,7 @@ export class UserService {
 
   async userLogin(loginData: LoginUserDTO) {
     const { email, password } = loginData;
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: [{ email }] });
 
     if (!user) {
       throw new HttpException('존재하지않는 사용자 이메일입니다', 402);

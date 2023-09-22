@@ -10,18 +10,17 @@ export class UserController {
   @Post('join')
   async createUser(
     @Body() createUserData: CreateUserDto,
-    @Req() req: Request,
-  ): Promise<void> {
-    await this.userService.createEmailAccount(createUserData);
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.userService.createEmailAccount(createUserData);
   }
 
   @Post('login')
   async login(
     @Body() loginUserData: LoginUserDTO,
-    @Res() res: Response,
-  ): Promise<Record<string, any>> {
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const token = await this.userService.userLogin(loginUserData);
-    res.cookie('token', token);
-    return res.status(200).send('logged in');
+    return res.cookie('token', token);
   }
 }
