@@ -21,6 +21,7 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const token = await this.userService.userLogin(loginUserData);
-    return res.cookie('token', token);
+    res.cookie('token', token);
+    return { message: '로그인 성공' };
   }
 }
