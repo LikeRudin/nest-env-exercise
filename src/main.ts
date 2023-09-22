@@ -5,11 +5,13 @@ import { SwaggerModule } from '@nestjs/swagger';
 
 import * as expressBasicAuth from 'express-basic-auth';
 import * as cookieParser from 'cookie-parser';
+import * as winston from 'winston';
 
 import { AppModule } from '@/app.module';
 import { API_URL } from '@/constants';
 import { swaggerConfig } from '@/configs/swagger.config';
 import { ValidationPipe } from '@nestjs/common';
+import { WinstonModule, utilities as NestWinstonUtilities } from 'nest-winston';
 
 class Application {
   private logger = new Logger(Application.name);
@@ -56,6 +58,19 @@ class Application {
 const init = async () => {
   const server = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
+    logger: WinstonModule.createLogger({
+      transports: [
+        new winston.transports.Console({
+          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            NestWinstonUtilities.format.nestLike('todoIsMatter', {
+              prettyPrint: true,
+            }),
+          ),
+        }),
+      ],
+    }),
   });
   const app = new Application(server);
   await app.bootstrap();

@@ -9,7 +9,7 @@ import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal:true,
+      isGlobal: true,
       envFilePath: '.env.' + (process.env.NODE_ENV || APP.NODE_ENV.DEVELOPMENT),
       load: [dbConfig],
     }),
@@ -18,7 +18,7 @@ import { UserModule } from './modules/user/user.module';
       useFactory: (config: ConfigService) => config.get(CONFIG.DB),
       inject: [ConfigService],
     }),
-    UserModule
+    UserModule,
   ],
   controllers: [AppController],
   providers: [],
