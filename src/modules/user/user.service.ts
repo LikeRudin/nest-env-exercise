@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -11,6 +12,7 @@ import { Repository } from 'typeorm';
 import { LoginUserDTO } from '../dtos/login-user-dto';
 import { UserEntity } from './user.entity';
 import * as JWT from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -28,11 +30,16 @@ export class UserService {
   }
 
   async createEmailAccount(userdata: CreateUserDto) {
-    const { username, email, password } = userdata;
+    const { username, email, password, passwordconfirm } = userdata;
     const userAlreadyExist = await this.userRepository.findOneBy({ email });
     if (userAlreadyExist) {
       throw new UnprocessableEntityException(
         '이미 가입되어있는 이메일 입니다.',
+      );
+    }
+    if (password !== passwordconfirm) {
+      throw new BadRequestException(
+        '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
       );
     }
     const user = this.userRepository.create({
@@ -57,7 +64,10 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자 이메일 입니다.');
-    } else if (password !== user.password) {
+    }
+
+    const passwordOk = bcrypt.compare(password, user.password);
+    if (!passwordOk) {
       throw new HttpException(
         '잘못된 비밀번호 입니다.',
         HttpStatus.NOT_ACCEPTABLE,

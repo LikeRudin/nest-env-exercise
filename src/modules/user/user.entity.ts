@@ -1,7 +1,14 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+} from 'typeorm';
 
 import { IsString, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import bcrypt from 'bcrypt';
 
 @Entity()
 export class UserEntity extends BaseEntity {
@@ -35,4 +42,16 @@ export class UserEntity extends BaseEntity {
   @Column()
   @IsEmail()
   email: string;
+
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    if (this.password) {
+      try {
+        this.password = await bcrypt.hash(this.password, 10);
+      } catch (error) {
+        console.log(error);
+        throw new Error('비밀번호 암호화에 실패했습니다.');
+      }
+    }
+  }
 }
